@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="/static/assets/css/blogs.css" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Items</title>
+    <style></style>
+</head>
+
+<body>
+    <div class="mt-5 background-blog">
+        <img src="/media/image/hero-image.png" alt="blogs">
+    </div>
+
+    <div class="container-fluid mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-12">
+                    <div class="mb-3">Home / Blogs</div>
+                    <div id="itemsContainer_1">
+
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <img src="/media/image/image (4).png" alt="" class="w-100 mb-3">
+                    <div>
+                        <h3 class="popular-blogs-title">Popular Blogs</h3>
+                    </div>
+                    <div class="item-card-side">
+                        <ol class='body-blogs'  id="itemsContainer_2">
+                       
+                       
+                    </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav aria-label="...">
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled">
+            <a class="page-link">Previous</a>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item active" aria-current="page">
+            <a class="page-link" href="#">2</a>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
+        </ul>
+      </nav>
+
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: "{% url 'blogList' %}",
+                method: "GET",
+                dataType: "json",
+                success: function (blogs) {
+                    const itemsContainer_1 = $("#itemsContainer_1");
+                    const itemsContainer_2 = $("#itemsContainer_2");
+
+                    blogs.blogs.forEach((element) => {
+                        itemsContainer_1.append(`
+                            <div class="item-card">
+                                <div class='body-blog'>
+                                    <img src="${element.image}" alt="${element.title}" />
+                                    <div>
+                                        <h5>${element.title}</h5>
+                                        <p class="moretext ">${element.description}</p>
+                                    </div>
+                                </div>
+                                <div class="item-footer">
+                                    <span class="date-format">${element.date}</span>
+                                 <a href="#" class="read_more">READ MORE <span><i class="fa-solid fa-arrow-right-long" ></i></span></a>
+                                </div>
+                            </div>
+                    `);
+                        itemsContainer_2.append(`
+                                        <li class="hello">
+                                            <div>
+                                                <h5>${element.title}</h5>
+                                                <p class="moretext">${element.description}</p>
+                                            </div>
+                                            <div class="item-footer-side">
+                                                <span class="date-format">${element.date}</span>
+                                                <a href="#" class="read_more-side">READ MORE <span><i class="fa-solid fa-arrow-right-long"></i></span></a>
+                                            </div>
+                                        </li>
+                    `);
+                    const count = itemsContainer_2.find('li')
+                    console.log( count.length); 
+                    
+                    });
+
+                    $(".date-format").each(function () {
+                        const inputDateStr = $(this).text(); // Get the date string
+                        const formattedDate = formatDate(inputDateStr); // Format the date
+                        $(this).text(formattedDate); // Update the text with the formatted date
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching data: ", error);
+                    alert("An error occurred while fetching the items.");
+                },
+            });
+        });
+
+        // Function to format the date
+        function formatDate(inputDateStr) {
+            // Create a Date object
+            const inputDate = new Date(inputDateStr);
+
+            // Check if the input date is valid
+            if (isNaN(inputDate.getTime())) {
+                return "Invalid date";
+            }
+
+            // Format the date
+            const day = inputDate.getDate().toString().padStart(2, "0");
+            const month = [
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+            ][inputDate.getMonth()];
+            const year = inputDate.getFullYear().toString().slice(2);
+            const hour =
+                inputDate.getHours() % 12 === 0 ? 12 : inputDate.getHours() % 12;
+            const minute = inputDate.getMinutes().toString().padStart(2, "0");
+            const ampm = inputDate.getHours() >= 12 ? "PM" : "AM";
+
+            // Return the desired format
+            return `${getWeekday(
+                inputDate
+            )} ${day} ${month} ${year}, ${hour}:${minute} ${ampm}`;
+        }
+
+        function getWeekday(date) {
+            const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            return weekdays[date.getDay()];
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(".read_more").click(function (event) {
+                event.preventDefault();
+                const $moreText = $(this).closest('.item-footer').prev().find('.moretext');
+                $moreText.slideToggle();
+
+                const isReadMore = $(this).text().trim() === "READ MORE";
+                $(this).text(isReadMore ? "READ LESS" : "READ MORE");
+            });
+        });
+
+       
+    </script>
+</body>
+
+</html>

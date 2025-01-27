@@ -1,0 +1,22 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/notification-listing-2.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/bootstrap.min.css' %}" />
+    
+    {% block header %} {% endblock %}
+</head>
+
+<body>
+    {% block content %} {% endblock %}
+    <script src="{% static 'assets/css/jquery-3.7.1.min.js'}"></script>
+    <script src="{% static 'assets/js/bootstrap.bundle.min.js' }"></script>
+</body>
+
+</html>
